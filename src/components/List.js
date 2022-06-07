@@ -3,15 +3,17 @@ import Bookshelf from "./Bookshelf";
 
 class List extends Component {
     render() {
-        const {Books} = this.props;
+        const {books,shelves,changeShelf} = this.props;
         return (
             <div className="list-books">
                 <div className="list-books-title">
-                    <h1>MyReads</h1>
+                    <h1>My Books Library</h1>
                 </div>
                 <div className="list-books-content">
                     <div>
-                        <Bookshelf />
+                        {shelves.map(shelf => (
+                            <Bookshelf key={shelf.key} shelf={shelf} Allbooks={books} changeShelf={changeShelf}/>
+                        ))}
                     </div>
                 </div>
                 <div className="open-search">
