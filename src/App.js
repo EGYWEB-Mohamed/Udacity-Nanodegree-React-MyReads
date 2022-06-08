@@ -1,18 +1,19 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
-import {Route,Routes} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import Search from "./components/search";
 import List from "./components/List";
 
 class BooksApp extends React.Component {
     state = {
         books: [],
+        searchBooks: []
     }
     shelves = [
         {key: 'currentlyReading', name: 'Currently Reading'},
         {key: 'wantToRead', name: 'Want to Read'},
-        {key: 'read', name: 'Have Read'},
+        {key: 'read', name: 'Read'},
     ];
     componentDidMount = () => {
         BooksAPI.getAll()
@@ -34,13 +35,26 @@ class BooksApp extends React.Component {
             }));
         }
     };
+    onSearch = (value) => {
+        BooksAPI.search(value).then(books => {
+            if (books.length >= 1) {
+                this.setState({searchBooks: books});
+            } else {
+                this.setState({searchBooks: []});
+                console.log('empty')
+            }
+        });
+    }
 
     render() {
+        const {books, searchBooks} = this.state;
         return (
             <div className="app">
                 <Routes>
-                    <Route path="/" element={<List books={this.state.books} shelves={this.shelves} changeShelf={this.changeBookShelf}/>}/>
-                    <Route path="/search" element={<Search/>}/>
+                    <Route path="/"
+                           element={<List books={books} shelves={this.shelves} changeShelf={this.changeBookShelf}/>}/>
+                    <Route path="/search"
+                           element={<Search searchBooks={searchBooks} changeShelf={this.changeBookShelf} books={books} onSearch={this.onSearch}/>}/>
                 </Routes>
             </div>
         )
