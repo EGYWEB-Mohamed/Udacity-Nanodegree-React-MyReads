@@ -8,7 +8,7 @@ class Search extends Component {
     };
     handleChange = event => {
         const val = event.target.value;
-        this.setState({ value: val }, () => {
+        this.setState(() => {
             if (val.length >= 1) {
                 this.props.onSearch(val);
             }
