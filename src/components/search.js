@@ -17,18 +17,18 @@ class Search extends Component {
             this.props.ResetSearch()
         }
     };
+    updatedBooks = searchBooks.map(book => {
+        books.map((oldBooks) => {
+            if (oldBooks.id === book.id) {
+                book.shelf = oldBooks.shelf;
+            }
+            return oldBooks;
+        });
+        return book;
+    });
     render() {
         const { searchBooks,changeShelf,books  } = this.props;
 
-        const updatedBooks = searchBooks.map(book => {
-            books.map(b => {
-                if (b.id === book.id) {
-                    book.shelf = b.shelf;
-                }
-                return b;
-            });
-            return book;
-        });
         return (
             <div className="search-books">
                 <div className="search-books-bar">

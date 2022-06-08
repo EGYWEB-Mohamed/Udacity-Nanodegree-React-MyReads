@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 
 class List extends Component {
     render() {
-        const {books,shelves,changeShelf} = this.props;
+        const {books,shelves,changeShelf,RemoveBookFromShelf} = this.props;
         return (
             <div className="list-books">
                 <div className="list-books-title">
@@ -13,7 +13,7 @@ class List extends Component {
                 <div className="list-books-content">
                     <div>
                         {shelves.map(shelf => (
-                            <Bookshelf key={shelf.key} shelf={shelf} Allbooks={books} changeShelf={changeShelf}/>
+                            <Bookshelf key={shelf.key} shelf={shelf} Allbooks={books} changeShelf={changeShelf} RemoveBookFromShelf={RemoveBookFromShelf}/>
                         ))}
                     </div>
                 </div>

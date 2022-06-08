@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2'
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
@@ -11,9 +12,9 @@ class BooksApp extends React.Component {
         searchBooks: []
     }
     shelves = [
-        {key: 'currentlyReading', name: 'Currently Reading'},
-        {key: 'wantToRead', name: 'Want to Read'},
-        {key: 'read', name: 'Read'},
+        {key: 'currentlyReading', value: 'Currently Reading'},
+        {key: 'wantToRead', value: 'Want To Read'},
+        {key: 'read', value: 'Read'},
     ];
     componentDidMount = () => {
         BooksAPI.getAll()
@@ -23,33 +24,59 @@ class BooksApp extends React.Component {
     };
 
     changeBookShelf = (book, shelf) => {
-        BooksAPI.update(book, shelf);
-        if (shelf === 'none') {
-            this.setState(prevState => ({
-                books: prevState.books.filter(b => b.id !== book.id)
-            }));
-        } else {
-            book.shelf = shelf;
-            this.setState(prevState => ({
-                books: prevState.books.filter(b => b.id !== book.id).concat(book)
-            }));
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Are You Sure You Want Move '+ book.title +' To ' + shelf + ' Shelf !',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Move It'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                BooksAPI.update(book, shelf).then((response) => {
+                    if (shelf === 'none') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'This Book Removed Successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'This Book Moved Successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+
+                    book.shelf = shelf;
+                    this.setState(prevState => ({
+                        books: prevState.books.filter((OldBook) => {
+                            return OldBook.id !== book.id
+                        }).concat(book)
+                    }));
+                });
+
+            }
+        })
+
     };
     onSearch = value => {
-        if (value.length > 0) {
-            BooksAPI.search(value).then(books => {
-                if (books.error) {
-                    this.setState({ searchBooks: [] });
-                } else {
-                    this.setState({ searchBooks: books });
-                }
-            });
-        }else {
-            this.setState({ searchBooks: [] });
-        }
+        BooksAPI.search(value).then(books => {
+            if (books.error) {
+                this.setState({ searchBooks: [] });
+            } else {
+                this.setState({ searchBooks: books });
+            }
+        });
     }
     ResetSearch = () => {
         this.setState({ searchBooks: [] });
+    }
+    RemoveBookFromShelf = (book,shelf) =>{
+
     }
     render() {
         const {books, searchBooks} = this.state;
@@ -57,7 +84,7 @@ class BooksApp extends React.Component {
             <div className="app">
                 <Routes>
                     <Route path="/"
-                           element={<List books={books} shelves={this.shelves} changeShelf={this.changeBookShelf}/>}/>
+                           element={<List books={books} shelves={this.shelves} changeShelf={this.changeBookShelf} RemoveBookFromShelf={this.RemoveBookFromShelf}/>}/>
                     <Route path="/search"
                            element={<Search searchBooks={searchBooks} changeShelf={this.changeBookShelf} books={books}
                                             onSearch={this.onSearch} ResetSearch={this.ResetSearch}/>}/>

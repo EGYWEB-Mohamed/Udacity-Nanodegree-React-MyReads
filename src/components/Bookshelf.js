@@ -3,15 +3,15 @@ import Book from "./Books";
 
 class Bookshelf extends Component {
     render() {
-        const { shelf,Allbooks,changeShelf } = this.props;
-        const ShelfBooks = Allbooks.filter(book => book.shelf === shelf.key)
+        const { shelf,Allbooks,changeShelf,RemoveBookFromShelf } = this.props;
+        const ShelfBooks = Allbooks.filter((book ) => book.shelf === shelf.key)
         return (
             <div className="bookshelf">
-                <h2 className="bookshelf-title">{shelf.name}</h2>
+                <h2 className="bookshelf-title">{shelf.value}</h2>
                 <div className="bookshelf-books">
                     <ol className="books-grid">
                         {ShelfBooks.map(book => (
-                            <Book key={book.id} book={book} shelf={shelf.key} changeShelf={changeShelf}/>
+                            <Book key={book.id} book={book} shelf={shelf.key} changeShelf={changeShelf} RemoveBookFromShelf={RemoveBookFromShelf}/>
                         ))}
                     </ol>
                 </div>
