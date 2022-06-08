@@ -5,7 +5,7 @@ import SearchBooks from "./SearchBooks";
 class Search extends Component {
     state = {
         inputValue: '',
-    };
+    }
     handleChange = event => {
         const val = event.target.value;
         this.setState(() => {
@@ -13,22 +13,26 @@ class Search extends Component {
                 this.props.onSearch(val);
             }
         });
+        this.setState({
+            inputValue: val
+        })
         if (val.length === 0) {
             this.props.ResetSearch()
         }
     };
-    updatedBooks = searchBooks.map(book => {
-        books.map((oldBooks) => {
-            if (oldBooks.id === book.id) {
-                book.shelf = oldBooks.shelf;
-            }
-            return oldBooks;
-        });
-        return book;
-    });
     render() {
-        const { searchBooks,changeShelf,books  } = this.props;
+        const { searchBooks,changeShelf,books,RemoveBookFromShelf  } = this.props;
+        const { inputValue  } = this.state;
 
+        const updatedBooks = searchBooks.map(book => {
+            books.map(oldBook => {
+                if (oldBook.id === book.id) {
+                    book.shelf = oldBook.shelf;
+                }
+                return oldBook;
+            });
+            return book;
+        });
         return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -38,7 +42,6 @@ class Search extends Component {
                     <div className="search-books-input-wrapper">
                         <input
                             type="text"
-                            value={this.state.value}
                             placeholder="Search by title or author"
                             onChange={this.handleChange}
                             autoFocus
@@ -53,7 +56,7 @@ class Search extends Component {
                     }>No Books To Show , Try Search Input Above ♥</h1> :
                         <ol className="books-grid">
                             {updatedBooks.map(book => (
-                                <SearchBooks key={book.id} book={book} shelf={book.shelf ? book.shelf : 'none'} changeShelf={changeShelf}/>
+                                <SearchBooks inputValue={inputValue} key={book.id} book={book} shelf={book.shelf ? book.shelf : 'none'} changeShelf={changeShelf} RemoveBookFromShelf={RemoveBookFromShelf}/>
                             ))}
                         </ol>
                     }

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 class Books extends Component {
     handleChange = (event) => this.props.changeShelf(this.props.book, event.target.value);
-    RemoveBookFromShelf = (event) => this.props.changeShelf(this.props.book, 'none');
+    RemoveBookFromShelf = (event) => this.props.RemoveBookFromShelf(this.props.book, 'none');
     render() {
         const { book,shelf } = this.props;
         let bgImage = book.imageLinks ? book.imageLinks.thumbnail : 'icons/book-placeholder.svg'
@@ -31,7 +31,7 @@ class Books extends Component {
                     </div>
                     <div className="book-title">{book.title}</div>
                     <div className="book-authors">
-                        {book.authors ? book.authors.join(', ') : 'Unknown'}
+                        {book.authors ? book.authors.join(', ') : 'Unknown Author'}
                     </div>
                     <button style={{
                         width: '100%',

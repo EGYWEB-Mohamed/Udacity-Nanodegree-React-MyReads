@@ -35,22 +35,12 @@ class BooksApp extends React.Component {
         }).then((result) => {
             if (result.isConfirmed) {
                 BooksAPI.update(book, shelf).then((response) => {
-                    if (shelf === 'none') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'This Book Removed Successfully',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    } else {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'This Book Moved Successfully',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    }
-
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'This Book Moved Successfully',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
                     book.shelf = shelf;
                     this.setState(prevState => ({
                         books: prevState.books.filter((OldBook) => {
@@ -75,8 +65,34 @@ class BooksApp extends React.Component {
     ResetSearch = () => {
         this.setState({ searchBooks: [] });
     }
-    RemoveBookFromShelf = (book,shelf) =>{
+    RemoveBookFromShelf = (book,shelf,inputValue) =>{
 
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Are You Sure You Want To Remove '+ book.title +' To ' + shelf,
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Yes, Remove It It'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                BooksAPI.update(book, shelf).then((response) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'This Book Removed Successfully',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+
+                    book.shelf = shelf;
+                    this.setState(prevState => ({
+                        books: prevState.books.filter((OldBook) => {
+                            return OldBook.id !== book.id
+                        }).concat(book)
+                    }));
+                });
+            }
+        })
     }
     render() {
         const {books, searchBooks} = this.state;
@@ -87,7 +103,7 @@ class BooksApp extends React.Component {
                            element={<List books={books} shelves={this.shelves} changeShelf={this.changeBookShelf} RemoveBookFromShelf={this.RemoveBookFromShelf}/>}/>
                     <Route path="/search"
                            element={<Search searchBooks={searchBooks} changeShelf={this.changeBookShelf} books={books}
-                                            onSearch={this.onSearch} ResetSearch={this.ResetSearch}/>}/>
+                                            onSearch={this.onSearch} ResetSearch={this.ResetSearch}  RemoveBookFromShelf={this.RemoveBookFromShelf}/>}/>
                 </Routes>
             </div>
         )

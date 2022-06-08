@@ -1,16 +1,12 @@
 import React, {Component} from 'react';
 
 class SearchBooks extends Component {
-    state = {
-        value: this.props.shelf
-    };
-    handleChange = event => {
-        const { value } = event.target;
-        this.setState({ value });
-        this.props.changeShelf(this.props.book, value);
-    };
+
+    handleChange = (event) => this.props.changeShelf(this.props.book, event.target.value);
+    RemoveBookFromShelf = (event) => this.props.RemoveBookFromShelf(this.props.book, 'none',this.props.inputValue);
     render() {
-        const { book } = this.props;
+        const { book,shelf } = this.props;
+        let bgImage = book.imageLinks ? book.imageLinks.thumbnail : 'icons/book-placeholder.svg'
         return (
             <li>
                 <div className="book">
@@ -20,22 +16,17 @@ class SearchBooks extends Component {
                             style={{
                                 width: 128,
                                 height: 193,
-                                backgroundImage: `url(${
-                                    book.imageLinks
-                                        ? book.imageLinks.thumbnail
-                                        : 'icons/book-placeholder.svg'
-                                })`
+                                backgroundImage: `url(${bgImage})`
                             }}
                         />
                         <div className="book-shelf-changer">
-                            <select value={this.state.value} onChange={this.handleChange}>
+                            <select value={shelf} onChange={this.handleChange}>
                                 <option value="move" disabled>
                                     Move to...
                                 </option>
                                 <option value="currentlyReading">Currently Reading</option>
                                 <option value="wantToRead">Want to Read</option>
                                 <option value="read">Read</option>
-                                <option value="none">None</option>
                             </select>
                         </div>
                     </div>
@@ -43,6 +34,16 @@ class SearchBooks extends Component {
                     <div className="book-authors">
                         {book.authors ? book.authors.join(', ') : 'Unknown Author'}
                     </div>
+                    {
+                        ( book.shelf ) ?
+                            <button style={{
+                                width: '100%',
+                                color: 'white',
+                                backgroundColor: 'red',
+                                borderColor: 'red'
+                            }} onClick={this.RemoveBookFromShelf}>Remove Book</button>
+                            : ''
+                    }
                 </div>
             </li>
         )
