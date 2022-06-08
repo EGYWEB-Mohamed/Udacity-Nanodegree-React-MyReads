@@ -35,17 +35,22 @@ class BooksApp extends React.Component {
             }));
         }
     };
-    onSearch = (value) => {
-        BooksAPI.search(value).then(books => {
-            if (books.length >= 1) {
-                this.setState({searchBooks: books});
-            } else {
-                this.setState({searchBooks: []});
-                console.log('empty')
-            }
-        });
+    onSearch = value => {
+        if (value.length > 0) {
+            BooksAPI.search(value).then(books => {
+                if (books.error) {
+                    this.setState({ searchBooks: [] });
+                } else {
+                    this.setState({ searchBooks: books });
+                }
+            });
+        }else {
+            this.setState({ searchBooks: [] });
+        }
     }
-
+    ResetSearch = () => {
+        this.setState({ searchBooks: [] });
+    }
     render() {
         const {books, searchBooks} = this.state;
         return (
@@ -54,7 +59,8 @@ class BooksApp extends React.Component {
                     <Route path="/"
                            element={<List books={books} shelves={this.shelves} changeShelf={this.changeBookShelf}/>}/>
                     <Route path="/search"
-                           element={<Search searchBooks={searchBooks} changeShelf={this.changeBookShelf} books={books} onSearch={this.onSearch}/>}/>
+                           element={<Search searchBooks={searchBooks} changeShelf={this.changeBookShelf} books={books}
+                                            onSearch={this.onSearch} ResetSearch={this.ResetSearch}/>}/>
                 </Routes>
             </div>
         )

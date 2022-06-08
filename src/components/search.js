@@ -13,6 +13,9 @@ class Search extends Component {
                 this.props.onSearch(val);
             }
         });
+        if (val.length === 0) {
+            this.props.ResetSearch()
+        }
     };
     render() {
         const { searchBooks,changeShelf,books  } = this.props;
@@ -26,7 +29,6 @@ class Search extends Component {
             });
             return book;
         });
-
         return (
             <div className="search-books">
                 <div className="search-books-bar">
