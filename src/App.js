@@ -2,14 +2,15 @@ import Swal from 'sweetalert2'
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes } from "react-router-dom";
 import Search from "./components/search";
 import List from "./components/List";
 
 class BooksApp extends React.Component {
     state = {
         books: [],
-        searchBooks: []
+        searchBooks: [],
+        searchInput: ''
     }
     shelves = [
         {key: 'currentlyReading', value: 'Currently Reading'},
@@ -23,7 +24,7 @@ class BooksApp extends React.Component {
             });
     };
 
-    changeBookShelf = (book, shelf) => {
+    changeShelf = (book, shelf) => {
         Swal.fire({
             title: 'Are you sure?',
             text: 'Are You Sure You Want Move '+ book.title +' To ' + shelf + ' Shelf !',
@@ -53,17 +54,20 @@ class BooksApp extends React.Component {
         })
 
     };
+    handleSearch = (value) => {
+        if (value.length >= 1) {
+            this.setState({
+                searchInput: value
+            })
+            this.onSearch(value);
+        } else {
+            this.setState({ searchBooks: [] });
+        }
+    }
     onSearch = value => {
         BooksAPI.search(value).then(books => {
-            if (books.error) {
-                this.setState({ searchBooks: [] });
-            } else {
-                this.setState({ searchBooks: books });
-            }
+            books.error ? this.setState({ searchBooks: [] }) : this.setState({ searchBooks: books })
         });
-    }
-    ResetSearch = () => {
-        this.setState({ searchBooks: [] });
     }
     RemoveBookFromShelf = (book,shelf,inputValue) =>{
 
@@ -88,21 +92,24 @@ class BooksApp extends React.Component {
                     this.setState(prevState => ({
                         books: prevState.books.filter((OldBook) => {
                             return OldBook.id !== book.id
-                        }).concat(book)
+                        }).concat(book),
+                        searchInput:'',
+                        searchBooks : []
                     }));
                 });
             }
         })
     }
     render() {
-        const {books, searchBooks} = this.state;
+        const {books, searchBooks,searchInput} = this.state;
+
         return (
             <div className="app">
                 <Routes>
                     <Route path="/"
-                           element={<List books={books} shelves={this.shelves} changeShelf={this.changeBookShelf} RemoveBookFromShelf={this.RemoveBookFromShelf}/>}/>
+                           element={<List books={books} shelves={this.shelves} changeShelf={this.changeShelf} RemoveBookFromShelf={this.RemoveBookFromShelf}/>}/>
                     <Route path="/search"
-                           element={<Search searchBooks={searchBooks} changeShelf={this.changeBookShelf} books={books}
+                           element={<Search searchInput={searchInput} handleSearch={this.handleSearch} searchBooks={searchBooks} changeShelf={this.changeShelf} books={books}
                                             onSearch={this.onSearch} ResetSearch={this.ResetSearch}  RemoveBookFromShelf={this.RemoveBookFromShelf}/>}/>
                 </Routes>
             </div>

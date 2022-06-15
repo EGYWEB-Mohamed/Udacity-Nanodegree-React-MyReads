@@ -3,26 +3,9 @@ import {Link} from "react-router-dom";
 import SearchBooks from "./SearchBooks";
 
 class Search extends Component {
-    state = {
-        inputValue: '',
-    }
-    handleChange = event => {
-        const val = event.target.value;
-        this.setState(() => {
-            if (val.length >= 1) {
-                this.props.onSearch(val);
-            }
-        });
-        this.setState({
-            inputValue: val
-        })
-        if (val.length === 0) {
-            this.props.ResetSearch()
-        }
-    };
+    handleSearch = event => this.props.handleSearch(event.target.value);
     render() {
-        const { searchBooks,changeShelf,books,RemoveBookFromShelf  } = this.props;
-        const { inputValue  } = this.state;
+        const { searchBooks,changeShelf,books,RemoveBookFromShelf,searchInput  } = this.props;
 
         const updatedBooks = searchBooks.map(book => {
             books.map(oldBook => {
@@ -42,8 +25,9 @@ class Search extends Component {
                     <div className="search-books-input-wrapper">
                         <input
                             type="text"
+                            value={searchInput}
                             placeholder="Search by title or author"
-                            onChange={this.handleChange}
+                            onChange={this.handleSearch}
                             autoFocus
                         />
                     </div>
@@ -56,7 +40,7 @@ class Search extends Component {
                     }>No Books To Show , Try Search Input Above ♥</h1> :
                         <ol className="books-grid">
                             {updatedBooks.map(book => (
-                                <SearchBooks inputValue={inputValue} key={book.id} book={book} shelf={book.shelf ? book.shelf : 'none'} changeShelf={changeShelf} RemoveBookFromShelf={RemoveBookFromShelf}/>
+                                <SearchBooks inputValue={searchInput} key={book.id} book={book} shelf={book.shelf ? book.shelf : 'none'} changeShelf={changeShelf} RemoveBookFromShelf={RemoveBookFromShelf}/>
                             ))}
                         </ol>
                     }

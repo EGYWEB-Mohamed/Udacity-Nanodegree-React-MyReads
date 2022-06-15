@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 class SearchBooks extends Component {
-
     handleChange = (event) => this.props.changeShelf(this.props.book, event.target.value);
     RemoveBookFromShelf = (event) => this.props.RemoveBookFromShelf(this.props.book, 'none',this.props.inputValue);
     render() {

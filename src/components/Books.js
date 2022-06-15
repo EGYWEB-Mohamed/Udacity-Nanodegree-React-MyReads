@@ -5,7 +5,7 @@ class Books extends Component {
     RemoveBookFromShelf = (event) => this.props.RemoveBookFromShelf(this.props.book, 'none');
     render() {
         const { book,shelf } = this.props;
-        let bgImage = book.imageLinks ? book.imageLinks.thumbnail : 'icons/book-placeholder.svg'
+        let bgImage = book.imageLinks ? book.imageLinks.thumbnail : 'icons/placeholder.png'
         return (
             <li>
                 <div className="book">
@@ -14,7 +14,7 @@ class Books extends Component {
                             className="book-cover"
                             style={{
                                 width: 128,
-                                height: 193,
+                                height: 192,
                                 backgroundImage: `url(${bgImage})`
                             }}
                         />
